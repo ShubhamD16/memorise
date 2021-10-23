@@ -1,0 +1,30 @@
+Types of Card:
+    1 - Discreptive
+    2 - MCQ Cards with 4 Options
+
+
+
+## Card Details
+     Map<String, dynamic> data = {
+                          "lable": lable,
+                          "description": description,
+                          "imgurl": "NA",
+                          "uid": uid,
+                          "timestamp": DateTime.now(),
+                          "type": "1",
+                          "preference": "NA",
+                        };
+
+
+
+
+## +User Details 
+
+     {
+                                                  "name": name,
+                                                  "username": username,
+                                                  "uid": uid,
+                                                  "mode": apmode,
+                                                  "font": font,
+                                                  "groups":{},
+                                                },

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "634415078587",
+    "project_id": "memorise-1b20f",
+    "storage_bucket": "memorise-1b20f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634415078587:android:4a2e174b1e27f62a239d9e",
+        "android_client_info": {
+          "package_name": "com.example.memorise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "634415078587-8lt981ces84j2cua22re8mnm9dvjue6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.memorise",
+            "certificate_hash": "a8d1a3fd5350102d2f5389e551d5aa1468fe0675"
+          }
+        },
+        {
+          "client_id": "634415078587-349n7crg1njhsu3m91n6cqcoe4dq9v3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD2MpYCxxFa4_z9RYRP_o6OB9Jfhfj6dY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "634415078587-349n7crg1njhsu3m91n6cqcoe4dq9v3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
