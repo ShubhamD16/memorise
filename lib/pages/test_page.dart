@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:memorise/providers/casdsdata.dart';
 import 'package:provider/provider.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:switcher_button/switcher_button.dart';
-import 'package:numberpicker/numberpicker.dart';
 
 class TestPage extends StatefulWidget {
   final List idlist;

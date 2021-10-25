@@ -80,7 +80,7 @@ class CardsListState extends State<CardsList> {
         child: Column(
           children: [
             const SizedBox(
-              height: 40,
+              height: 20,
             ),
             Expanded(
               flex: 1,

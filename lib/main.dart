@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:memorise/components/fontsdata.dart';
 import 'package:memorise/pages/mainpage.dart';
 import 'package:memorise/pages/siginup.dart';
@@ -15,7 +16,8 @@ import 'package:provider/single_child_widget.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -50,7 +52,7 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider<UserState>.value(
                   value: UserState(usersnap.data)),
               // theme and font
-              ChangeNotifierProvider<Setting>.value(value: Setting())
+              ChangeNotifierProvider<Setting>.value(value: Setting()),
             ];
 
             if (usersnap.hasData) {

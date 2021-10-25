@@ -113,6 +113,8 @@ class _AddUserDataState extends State<AddUserData> {
                                                   "mode": apmode,
                                                   "font": font,
                                                   "groups": {},
+                                                  "friends": [],
+                                                  "cancelled": [],
                                                 },
                                               )
                                             }
