@@ -103,7 +103,7 @@ class MyApp extends StatelessWidget {
                 }
                 return MaterialApp(
                   title: 'Flutter Demo',
-                  theme: context.watch<Setting>().getTheme(),
+                  theme: context.watch<Setting>().getTheme(context),
                   routes: {
                     "/": (context) => const Dashboard(),
                   },

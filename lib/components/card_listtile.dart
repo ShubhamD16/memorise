@@ -16,6 +16,97 @@ class _CardListTileState extends State<CardListTile> {
   bool expanded = false;
   @override
   Widget build(BuildContext context) {
+    Widget? getTypeData(String type) {
+      if (type == "1") {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            widget.data["imgurl"] != "NA"
+                ? SizedBox(
+                    height: 200,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.data["imgurl"],
+                      placeholder: (context, s) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    ),
+                  )
+                : const SizedBox(),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              widget.data["description"],
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ],
+        );
+      }
+      if (type == "2") {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Card(
+              color: widget.data["ans1"] ? Colors.greenAccent : null,
+              child: ListTile(
+                tileColor: Colors.transparent,
+                title: Center(
+                  child: Text(
+                    widget.data["op1"],
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ),
+            ),
+            Card(
+              color: widget.data["ans2"] ? Colors.greenAccent : null,
+              child: ListTile(
+                tileColor: Colors.transparent,
+                title: Center(
+                  child: Text(
+                    widget.data["op2"],
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ),
+            ),
+            Card(
+              color: widget.data["ans3"] ? Colors.greenAccent : null,
+              child: ListTile(
+                tileColor: Colors.transparent,
+                title: Center(
+                  child: Text(
+                    widget.data["op3"],
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ),
+            ),
+            Card(
+              color: widget.data["ans4"] ? Colors.greenAccent : null,
+              child: ListTile(
+                tileColor: Colors.transparent,
+                title: Center(
+                  child: Text(
+                    widget.data["op4"],
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+    }
+
     return Slidable(
       actionExtentRatio: 0.2,
       actionPane: const SlidableDrawerActionPane(),
@@ -62,39 +153,13 @@ class _CardListTileState extends State<CardListTile> {
               ),
               const Divider(
                 height: 10,
+                thickness: 4,
               ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 height: expanded ? 300 : 0,
                 child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      widget.data["imgurl"] != "NA"
-                          ? SizedBox(
-                              height: 200,
-                              child: CachedNetworkImage(
-                                imageUrl: widget.data["imgurl"],
-                                placeholder: (context, s) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                              ),
-                            )
-                          : const SizedBox(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        widget.data["description"],
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ],
-                  ),
+                  child: getTypeData(widget.data["type"]),
                 ),
               ),
               !expanded ? const Text("tap to expand") : const SizedBox(),

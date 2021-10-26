@@ -19,34 +19,176 @@ class _GetTestCardState extends State<GetTestCard> {
   bool open = false;
 
   Widget type1(Map<String, dynamic> data) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        data["imgurl"] != "NA"
-            ? SizedBox(
-                height: 300,
-                child: CachedNetworkImage(
-                  imageUrl: data["imgurl"],
+    return FlipCard(
+      back: Card(
+        child: SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                data["imgurl"] != "NA"
+                    ? SizedBox(
+                        height: 4 * MediaQuery.of(context).size.height / 12,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: CachedNetworkImage(
+                            imageUrl: data["imgurl"],
+                          ),
+                        ),
+                      )
+                    : const SizedBox(
+                        height: 30,
+                      ),
+                const SizedBox(
+                  height: 10,
                 ),
-              )
-            : const SizedBox(
-                height: 30,
-              ),
-        const SizedBox(
-          height: 10,
+                Text(data["description"]),
+                const SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
+          ),
         ),
-        Text(data["description"]),
-        const SizedBox(
-          height: 30,
+      ),
+      front: const Card(
+        child: Center(
+          child: Icon(Icons.visibility_off),
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget type2(Map<String, dynamic> data) {
+    return FlipCard(
+      back: Card(
+        child: SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Card(
+                  color: data["ans1"] ? Colors.greenAccent : null,
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op1"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  color: data["ans2"] ? Colors.greenAccent : null,
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op2"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  color: data["ans3"] ? Colors.greenAccent : null,
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op3"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  color: data["ans4"] ? Colors.greenAccent : null,
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op4"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      front: Card(
+        child: SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Card(
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op1"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op2"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op3"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    tileColor: Colors.transparent,
+                    title: Center(
+                      child: Text(
+                        data["op4"],
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   Widget gettype(String i, Map<String, dynamic> data) {
     if (i == '1') {
       return type1(data);
+    } else if (i == '2') {
+      return type2(data);
     } else {
       print("No card of typr $i");
       return const SizedBox();
@@ -80,21 +222,7 @@ class _GetTestCardState extends State<GetTestCard> {
             ),
             Expanded(
               flex: 1,
-              child: FlipCard(
-                back: Card(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: SingleChildScrollView(
-                      child: gettype(widget.data["type"], widget.data),
-                    ),
-                  ),
-                ),
-                front: const Card(
-                  child: Center(
-                    child: Icon(Icons.visibility_off),
-                  ),
-                ),
-              ),
+              child: gettype(widget.data["type"], widget.data),
             ),
             SizedBox(
               height: 40,

@@ -41,7 +41,7 @@ class CardsListState extends State<CardsList> {
             await showDialog(
                 context: context,
                 builder: (context) {
-                  return AddCard(context, uid, groupslist, widget.groupname);
+                  return addCard(context, uid, groupslist, widget.groupname);
                 });
           },
           child: Icon(Icons.add),
@@ -69,12 +69,19 @@ class CardsListState extends State<CardsList> {
           await showDialog(
               context: context,
               builder: (context) {
-                return AddCard(context, uid, groupslist, widget.groupname);
+                return addCard(context, uid, groupslist, widget.groupname);
               });
         },
         child: Icon(Icons.add),
       ),
-      body: SizedBox(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: Theme.of(context).brightness == Brightness.light
+                  ? AssetImage("assets/day_background.jpg")
+                  : AssetImage("assets/night_background.jpg"),
+              fit: BoxFit.cover),
+        ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Column(

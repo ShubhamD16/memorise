@@ -59,7 +59,12 @@ class Dashboard extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                        height: 200,
+                        margin: const EdgeInsets.only(bottom: 50),
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("assets/drawer.jpg"),
+                                fit: BoxFit.cover)),
+                        height: 150,
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -67,7 +72,7 @@ class Dashboard extends StatelessWidget {
                               Text(
                                 userdata["name"].toString(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 25),
+                                style: const TextStyle(fontSize: 25),
                               ),
                               const SizedBox(
                                 height: 5,
@@ -140,11 +145,18 @@ class Dashboard extends StatelessWidget {
             await showDialog(
                 context: context,
                 builder: (context) {
-                  return AddCard(context, uid, groupkeys);
+                  return addCard(context, uid, groupkeys);
                 });
           },
         ),
-        body: SizedBox(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: Theme.of(context).brightness == Brightness.light
+                    ? AssetImage("assets/day_background.jpg")
+                    : AssetImage("assets/night_background.jpg"),
+                fit: BoxFit.cover),
+          ),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Column(
@@ -169,6 +181,7 @@ class Dashboard extends StatelessWidget {
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return Card(
+                            margin: EdgeInsets.symmetric(vertical: 0),
                             child: ListTile(
                               title: const Text(
                                 "All Cards",
@@ -194,7 +207,7 @@ class Dashboard extends StatelessWidget {
                                   children: [
                                     ElevatedButton(
                                         child: const Text(
-                                          "Take Test",
+                                          "Test Yourself",
                                         ),
                                         onPressed: () {
                                           Navigator.push(
@@ -256,26 +269,32 @@ class Dashboard extends StatelessWidget {
                                         ),
                                         */
                                         actions: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("Cancle")),
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                FirebaseFirestore.instance
-                                                    .collection("users")
-                                                    .doc(uid)
-                                                    .update({
-                                                  "groups.$key":
-                                                      FieldValue.delete()
-                                                }).whenComplete(() {
-                                                  Navigator.pop(context);
-                                                  ToastSucessful(
-                                                      "Group deleted");
-                                                });
-                                              },
-                                              child: const Text("Delete")),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text("Cancle")),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    FirebaseFirestore.instance
+                                                        .collection("users")
+                                                        .doc(uid)
+                                                        .update({
+                                                      "groups.$key":
+                                                          FieldValue.delete()
+                                                    }).whenComplete(() {
+                                                      Navigator.pop(context);
+                                                      ToastSucessful(
+                                                          "Group deleted");
+                                                    });
+                                                  },
+                                                  child: const Text("Delete")),
+                                            ],
+                                          )
                                         ],
                                       );
                                     });
@@ -318,7 +337,7 @@ class Dashboard extends StatelessWidget {
                                               BorderRadius.circular(20),
                                           child: ElevatedButton(
                                             child: const Text(
-                                              "Take Test",
+                                              "Test Yourself",
                                             ),
                                             onPressed: () {
                                               Navigator.push(
@@ -349,7 +368,7 @@ class Dashboard extends StatelessWidget {
                                                 await showDialog(
                                                     context: context,
                                                     builder: (context) {
-                                                      return AddCard(context,
+                                                      return addCard(context,
                                                           uid, groupkeys, key);
                                                     });
                                               }),

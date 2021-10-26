@@ -227,130 +227,141 @@ class _TestPageState extends State<TestPage> {
 
     return SafeArea(
       child: Scaffold(
-        body: isready
-            ? SizedBox(
-                height: h,
-                width: w,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: h / 12,
-                      width: w,
-                      child: const Card(
-                        child: Center(child: Text("Test Yourself")),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: Theme.of(context).brightness == Brightness.light
+                    ? AssetImage("assets/day_background.jpg")
+                    : AssetImage("assets/night_background.jpg"),
+                fit: BoxFit.cover),
+          ),
+          child: isready
+              ? SizedBox(
+                  height: h,
+                  width: w,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: h / 12,
+                        width: w,
+                        child: const Card(
+                          child: Center(child: Text("Test Yourself")),
+                        ),
                       ),
-                    ),
-                    // For Timer and other details
-                    SizedBox(
-                      height: h / 12,
-                      width: w,
-                      child: timer
-                          ? Center(
-                              child: CircularCountDownTimer(
-                                duration: duration,
-                                initialDuration: 0,
-                                controller: _controller,
-                                width: MediaQuery.of(context).size.width / 2,
-                                height: MediaQuery.of(context).size.height / 2,
-                                ringColor: Colors.grey,
-                                ringGradient: null,
-                                fillColor: Colors.lightBlue,
-                                fillGradient: const RadialGradient(
-                                    colors: [Colors.blueGrey, Colors.blue]),
-                                backgroundColor: Colors.blueGrey,
-                                backgroundGradient: null,
-                                strokeWidth: 10.0,
-                                strokeCap: StrokeCap.round,
-                                textStyle: const TextStyle(
-                                    fontSize: 30.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                                textFormat: CountdownTextFormat.S,
-                                isReverse: true,
-                                isReverseAnimation: false,
-                                isTimerTextShown: true,
-                                autoStart: true,
-                                onStart: () {
-                                  print('Countdown Started');
-                                },
-                                onComplete: () {
-                                  print('Countdown Ended');
-                                },
-                              ),
-                            )
-                          : const SizedBox(),
-                    ),
-                    // Ford card corosule
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: SizedBox(
-                        height: 8 * h / 12,
-                        width: 300,
-                        child: widget.idlist.isNotEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CarouselSlider.builder(
-                                  carouselController: _carouselController,
-                                  itemCount: sortedidlist.length,
-                                  itemBuilder: (context, index, index2) {
-                                    var temp = context
-                                        .watch<AllCardsData>()
-                                        .getcardsnapshot(sortedidlist[index]);
-
-                                    return temp != null
-                                        ? GetTestCard(
-                                            data: temp.data(), id: temp.id)
-                                        : const Center(
-                                            child: Text("Card Deleted"),
-                                          );
+                      // For Timer and other details
+                      SizedBox(
+                        height: h / 12,
+                        width: w,
+                        child: timer
+                            ? Center(
+                                child: CircularCountDownTimer(
+                                  duration: duration,
+                                  initialDuration: 0,
+                                  controller: _controller,
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  height:
+                                      MediaQuery.of(context).size.height / 2,
+                                  ringColor: Colors.grey,
+                                  ringGradient: null,
+                                  fillColor: Colors.lightBlue,
+                                  fillGradient: const RadialGradient(
+                                      colors: [Colors.blueGrey, Colors.blue]),
+                                  backgroundColor: Colors.blueGrey,
+                                  backgroundGradient: null,
+                                  strokeWidth: 10.0,
+                                  strokeCap: StrokeCap.round,
+                                  textStyle: const TextStyle(
+                                      fontSize: 30.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                  textFormat: CountdownTextFormat.S,
+                                  isReverse: true,
+                                  isReverseAnimation: false,
+                                  isTimerTextShown: true,
+                                  autoStart: true,
+                                  onStart: () {
+                                    print('Countdown Started');
                                   },
-                                  options: CarouselOptions(
-                                    height: 8 * h / 12,
-                                    viewportFraction: 1,
-                                    enableInfiniteScroll: false,
-                                  ),
+                                  onComplete: () {
+                                    print('Countdown Ended');
+                                  },
                                 ),
                               )
-                            : const Center(
-                                child: Text("No Cards Available for testing."),
-                              ),
+                            : const SizedBox(),
                       ),
-                    ),
-                    // For buttons and all.
-                    SizedBox(
-                      width: w,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              _carouselController.previousPage();
-                            },
-                            child: const Text("Previous"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              _carouselController.nextPage();
-                            },
-                            child: const Text("next"),
-                          ),
-                        ],
+                      // Ford card corosule
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: SizedBox(
+                          height: 8 * h / 12,
+                          width: 300,
+                          child: widget.idlist.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CarouselSlider.builder(
+                                    carouselController: _carouselController,
+                                    itemCount: sortedidlist.length,
+                                    itemBuilder: (context, index, index2) {
+                                      var temp = context
+                                          .watch<AllCardsData>()
+                                          .getcardsnapshot(sortedidlist[index]);
+
+                                      return temp != null
+                                          ? GetTestCard(
+                                              data: temp.data(), id: temp.id)
+                                          : const Center(
+                                              child: Text("Card Deleted"),
+                                            );
+                                    },
+                                    options: CarouselOptions(
+                                      height: 8 * h / 12,
+                                      viewportFraction: 1,
+                                      enableInfiniteScroll: false,
+                                    ),
+                                  ),
+                                )
+                              : const Center(
+                                  child:
+                                      Text("No Cards Available for testing."),
+                                ),
+                        ),
                       ),
-                    ),
-                  ],
+                      // For buttons and all.
+                      SizedBox(
+                        width: w,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                _carouselController.previousPage();
+                              },
+                              child: const Text("Previous"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _carouselController.nextPage();
+                              },
+                              child: const Text("next"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return startTest();
+                            });
+                      },
+                      child: const Text("Test Setup")),
                 ),
-              )
-            : Center(
-                child: ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return startTest();
-                          });
-                    },
-                    child: const Text("Test Setup")),
-              ),
+        ),
       ),
     );
   }
