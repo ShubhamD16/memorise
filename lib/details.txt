@@ -26,5 +26,7 @@ Types of Card:
                                                   "uid": uid,
                                                   "mode": apmode,
                                                   "font": font,
-                                                  "groups":{},
+                                                  "groups": {},
+                                                  "friends": [],
+                                                  "cancelled": [],
                                                 },

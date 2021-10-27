@@ -206,12 +206,22 @@ class _GetTestCardState extends State<GetTestCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ListTile(
-              title: Center(
-                child: Text(
-                  widget.data["lable"],
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500, fontSize: 25),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 120),
+              child: Card(
+                child: Scrollbar(
+                  child: SingleChildScrollView(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Text(
+                          widget.data["lable"],
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 25),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

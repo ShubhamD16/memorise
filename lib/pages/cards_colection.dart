@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:memorise/components/card_listtile.dart';
 import 'package:memorise/components/create_card.dart';
 import 'package:memorise/providers/casdsdata.dart';
@@ -27,10 +26,10 @@ class CardsListState extends State<CardsList> {
 
   @override
   Widget build(BuildContext context) {
-    String uid = context.read<UserState>().user!.uid;
     final allCardslist = context.watch<AllCardsData>().doclist;
     List<QueryDocumentSnapshot<Map<String, dynamic>>> datalist = [];
-    final groupslist = context.watch<UserData>().data!["groups"].keys.toList();
+    final userdata = context.watch<UserData>().data;
+    final groupslist = userdata!["groups"].keys.toList();
     if (widget.cardkeylist.isEmpty) {
       return Scaffold(
         appBar: AppBar(
@@ -41,7 +40,8 @@ class CardsListState extends State<CardsList> {
             await showDialog(
                 context: context,
                 builder: (context) {
-                  return addCard(context, uid, groupslist, widget.groupname);
+                  return addCard(
+                      context, userdata["uid"], groupslist, widget.groupname);
                 });
           },
           child: Icon(Icons.add),
@@ -69,7 +69,8 @@ class CardsListState extends State<CardsList> {
           await showDialog(
               context: context,
               builder: (context) {
-                return addCard(context, uid, groupslist, widget.groupname);
+                return addCard(
+                    context, userdata["uid"], groupslist, widget.groupname);
               });
         },
         child: Icon(Icons.add),
@@ -97,6 +98,7 @@ class CardsListState extends State<CardsList> {
                   return CardListTile(
                     data: datalist[index].data(),
                     cardid: datalist[index].id,
+                    groupname: widget.groupname,
                   );
                 },
               ),

@@ -8,6 +8,7 @@ import 'package:memorise/pages/mainpage.dart';
 import 'package:memorise/pages/siginup.dart';
 import 'package:memorise/providers/casdsdata.dart';
 import 'package:memorise/providers/settings_provider.dart';
+import 'package:memorise/providers/sharedcards_provider.dart';
 import 'package:memorise/providers/userdata_provider.dart';
 import 'package:memorise/providers/userstate_provider.dart';
 import 'package:provider/provider.dart';
@@ -78,6 +79,19 @@ class MyApp extends StatelessWidget {
                   return AllCardsData(event.docs);
                 }),
                 initialData: AllCardsData([]),
+              ));
+
+              // SharedCards
+              providers.add(StreamProvider<SharedCards>.value(
+                value: FirebaseFirestore.instance
+                    .collection("cards")
+                    .where("shared", arrayContains: usersnap.data!.uid)
+                    .orderBy("timestamp", descending: true)
+                    .snapshots()
+                    .map((event) {
+                  return SharedCards(event.docs);
+                }),
+                initialData: SharedCards([]),
               ));
             }
 

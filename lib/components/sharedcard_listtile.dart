@@ -3,37 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:memorise/components/edit_card.dart';
 import 'package:memorise/components/share_card.dart';
 import 'package:memorise/components/toast_comp.dart';
 import 'package:memorise/providers/userdata_provider.dart';
 import 'package:provider/provider.dart';
 
-class CardListTile extends StatefulWidget {
+class SharedCardListTile extends StatefulWidget {
   final Map<String, dynamic> data;
   final String cardid;
-  final String? groupname;
-  const CardListTile({
+  const SharedCardListTile({
     Key? key,
     required this.data,
     required this.cardid,
-    this.groupname,
   }) : super(key: key);
 
   @override
-  _CardListTileState createState() => _CardListTileState();
+  _SharedCardListTileState createState() => _SharedCardListTileState();
 }
 
-class _CardListTileState extends State<CardListTile> {
+class _SharedCardListTileState extends State<SharedCardListTile> {
   bool expanded = false;
   @override
   Widget build(BuildContext context) {
     final userdata = context.watch<UserData>().data;
     final friends = userdata!['friends'];
     List<String> grouplist = userdata["groups"].keys.toList();
-    widget.groupname != null ? grouplist.remove(widget.groupname) : null;
-
-    String selectedgroup = grouplist.length > 0 ? grouplist[0] : "";
+    print(grouplist);
+    if (grouplist.isNotEmpty) {
+      grouplist[0] != "all cards" ? grouplist.insert(0, 'all cards') : null;
+    } else {
+      grouplist.add("all cards");
+    }
+    String group = 'all cards';
+    print(grouplist);
 
     Widget? getTypeData(String type) {
       if (type == "1") {
@@ -130,133 +132,117 @@ class _CardListTileState extends State<CardListTile> {
       actionExtentRatio: 0.15,
       actionPane: const SlidableDrawerActionPane(),
       secondaryActions: [
-        IconSlideAction(
-          icon: Icons.edit,
-          color: Colors.green,
-          onTap: () async {
-            print(widget.data);
-            await editCard(
-                context, userdata["uid"], widget.data, widget.cardid);
-          },
-        ),
-        IconSlideAction(
-          icon: Icons.remove_from_queue,
-          color: widget.groupname != "all cards"
-              ? Colors.orange[600]
-              : Colors.grey,
-          onTap: () async {
-            if (widget.groupname != "all cards") {
-              await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("remove from ${widget.groupname}"),
-                      actions: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text("Cancle"),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(userdata["uid"])
-                                      .update({
-                                    "groups.${widget.groupname}":
-                                        FieldValue.arrayRemove([widget.cardid])
-                                  }).whenComplete(() {
-                                    ToastSucessful("card removed");
+        grouplist.length > 0
+            ? IconSlideAction(
+                icon: Icons.save,
+                color: Colors.yellow,
+                onTap: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Add card to group"),
+                          content: DropDown(
+                            items: grouplist,
+                            isExpanded: true,
+                            initialValue: group,
+                            onChanged: (value) {
+                              group = value.toString();
+                            },
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
                                     Navigator.pop(context);
-                                  }).onError(
-                                          (error, stackTrace) => print(error));
-                                },
-                                child: const Text("Remove"))
+                                  },
+                                  child: const Text("Cancle"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await FirebaseFirestore.instance
+                                        .collection("cards")
+                                        .add(widget.data)
+                                        .then((value) async {
+                                      await FirebaseFirestore.instance
+                                          .collection("cards")
+                                          .doc(value.id)
+                                          .update({
+                                        "attempts": 0,
+                                        "correct": 0,
+                                        "uid": userdata["uid"],
+                                        "timestamp": DateTime.now(),
+                                        "preference": "NA",
+                                        "shared": [],
+                                      }).then((value2) async {
+                                        ToastSucessful("Card Saved");
+                                        if (group != "all cards") {
+                                          await FirebaseFirestore.instance
+                                              .collection("users")
+                                              .doc(userdata["uid"])
+                                              .update({
+                                            "groups.$group":
+                                                FieldValue.arrayUnion(
+                                                    [value.id])
+                                          }).whenComplete(() {
+                                            ToastSucessful(
+                                                "Card added to $group");
+                                          });
+                                        }
+                                        Navigator.pop(context);
+                                      });
+                                    });
+                                  },
+                                  child: const Text("Save"),
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    );
-                  });
-            } else {
-              ToastSucessful("Disabled");
-            }
-          },
-        ),
+                        );
+                      });
+                },
+              )
+            : const SizedBox(),
         IconSlideAction(
-          icon: Icons.add_to_queue,
-          color: grouplist.length > 0 ? Colors.yellow : Colors.grey,
-          onTap: () async {
-            if (grouplist.length > 0) {
-              print(grouplist);
-              print(selectedgroup);
-              await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text("Add card to group"),
-                      content: DropDown(
-                        items: grouplist,
-                        isExpanded: true,
-                        initialValue: selectedgroup,
-                        onChanged: (value) {
-                          selectedgroup = value.toString();
-                        },
-                      ),
-                      actions: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text("Cancle"),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                await FirebaseFirestore.instance
-                                    .collection("users")
-                                    .doc(userdata["uid"])
-                                    .update({
-                                  "groups.$selectedgroup":
-                                      FieldValue.arrayUnion([widget.cardid])
-                                }).whenComplete(() {
-                                  Navigator.pop(context);
-                                  ToastSucessful(
-                                      "Card added to $selectedgroup");
-                                });
-                              },
-                              child: const Text("Add"),
-                            ),
-                          ],
-                        )
-                      ],
-                    );
-                  });
-            } else {
-              ToastSucessful("Please add some groups");
-            }
-          },
-        ),
-        IconSlideAction(
-          icon: Icons.share,
-          color: Colors.lightBlue,
+          icon: Icons.delete_forever,
+          color: Colors.red[600],
           onTap: () async {
             await showDialog(
                 context: context,
                 builder: (context) {
-                  return shareDialog(friends, widget.cardid);
+                  return AlertDialog(
+                    title: const Text("Remove from shared list"),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Cancle"),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseFirestore.instance
+                                  .collection("cards")
+                                  .doc(widget.cardid)
+                                  .update({
+                                "shared":
+                                    FieldValue.arrayRemove([userdata["uid"]])
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Remove"),
+                          ),
+                        ],
+                      )
+                    ],
+                  );
                 });
           },
-        ),
-        IconSlideAction(
-          icon: Icons.delete_forever,
-          color: Colors.red[600],
-          onTap: () {},
         ),
         IconSlideAction(
           icon: Icons.cancel,

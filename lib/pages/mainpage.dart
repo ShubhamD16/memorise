@@ -8,12 +8,14 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:memorise/components/create_group.dart';
+import 'package:memorise/components/sharedcard_listtile.dart';
 import 'package:memorise/components/toast_comp.dart';
 import 'package:memorise/pages/add_user_data.dart';
 import 'package:memorise/pages/cards_colection.dart';
 import 'package:memorise/components/create_card.dart';
 import 'package:memorise/pages/friends_page.dart';
 import 'package:memorise/pages/settings_page.dart';
+import 'package:memorise/pages/sharedcards_page.dart';
 import 'package:memorise/pages/test_page.dart';
 import 'package:memorise/providers/casdsdata.dart';
 import 'package:memorise/providers/userdata_provider.dart';
@@ -180,52 +182,68 @@ class Dashboard extends StatelessWidget {
                   child: ListView.separated(
                       itemBuilder: (context, index) {
                         if (index == 0) {
-                          return Card(
-                            margin: EdgeInsets.symmetric(vertical: 0),
-                            child: ListTile(
-                              title: const Text(
-                                "All Cards",
-                                style: TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.w300),
-                              ),
-                              onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return CardsList(
-                                    cardkeylist: context
-                                        .watch<AllCardsData>()
-                                        .getidlist(),
-                                    groupname: "all cards",
-                                  );
-                                }));
-                              },
-                              subtitle: SizedBox(
-                                height: 30,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    ElevatedButton(
-                                        child: const Text(
-                                          "Test Yourself",
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return TestPage(
-                                                    idlist: context
-                                                        .watch<AllCardsData>()
-                                                        .getidlist());
-                                              },
+                          return Column(
+                            children: [
+                              Card(
+                                child: ListTile(
+                                  title: const Text(
+                                    "All Cards",
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return CardsList(
+                                        cardkeylist: context
+                                            .watch<AllCardsData>()
+                                            .getidlist(),
+                                        groupname: "all cards",
+                                      );
+                                    }));
+                                  },
+                                  subtitle: SizedBox(
+                                    height: 30,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        ElevatedButton(
+                                            child: const Text(
+                                              "Test Yourself",
                                             ),
-                                          );
-                                        }),
-                                  ],
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return TestPage(
+                                                        idlist: context
+                                                            .watch<
+                                                                AllCardsData>()
+                                                            .getidlist());
+                                                  },
+                                                ),
+                                              );
+                                            }),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              Card(
+                                child: ListTile(
+                                  title: const Text("Shared cards"),
+                                  onTap: () async {
+                                    await Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return const SharedCardsPage();
+                                    }));
+                                  },
+                                ),
+                              )
+                            ],
                           );
                         }
                         var key = groupkeys[index - 1];

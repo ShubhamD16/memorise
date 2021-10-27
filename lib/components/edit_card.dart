@@ -1,72 +1,46 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_dropdown/flutter_dropdown.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:memorise/components/text_recognization.dart';
 import 'package:memorise/components/toast_comp.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-Widget addCard(BuildContext context, String uid, List<String> grouplist,
-    [String? groupname]) {
-  Map cardtypes = {
-    "1": "Descriptive Card",
-    "2": "Multiple Choice",
-  };
+editCard(BuildContext context, String uid, Map data, String id) async {
+  print(data);
 
-  Map cardDialod = {
-    "1": AddCard1(context, uid, grouplist, groupname),
-    "2": AddCard2(context, uid, grouplist, groupname),
-  };
+  print("check check");
 
-  print(grouplist);
-  return AlertDialog(
-    title: const Center(
-      child: Text("Select type"),
-    ),
-    content: ListView.builder(
-      itemCount: cardtypes.length,
-      itemBuilder: (context, index) {
-        return Card(
-          child: ListTile(
-            onTap: () {
-              Navigator.pop(context);
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return cardDialod[(index + 1).toString()];
-                  });
-            },
-            title: Text(
-              cardtypes[(index + 1).toString()],
-            ),
-          ),
-        );
-      },
-    ),
-  );
+  await showDialog(
+      context: context,
+      builder: (context) {
+        print(data["type"]);
+        if (data["type"] == "1") {
+          return EditCard1(context, uid, data, id);
+        }
+        if (data["type"] == "2") {
+          return EditCard2(context, uid, data, id);
+        }
+        return SizedBox();
+      });
 }
 
-Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
-    [String? groupname]) {
-  String lable = "";
-  String description = "";
-  String imgurl = "";
+Widget EditCard1(BuildContext context, String uid, Map data, String id) {
+  print(data);
+  String lable = data["lable"];
+  String description = data["description"];
+  String imgurl = data["imgurl"];
 
   File? image;
   XFile? tempimg;
 
   bool loader = false;
-  print(grouplist);
-  grouplist[0] != "all cards" ? grouplist.insert(0, 'all cards') : null;
-  String group = groupname ?? 'all cards';
-
-  print(group);
-  print(grouplist);
 
   return StatefulBuilder(
     builder: (context, setState) {
@@ -117,6 +91,12 @@ Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
             lable = val;
           },
         ),
+        const SizedBox(
+          height: 10,
+        ),
+        image == null && imgurl != "NA"
+            ? SizedBox(height: 200, child: CachedNetworkImage(imageUrl: imgurl))
+            : SizedBox(),
         const SizedBox(
           height: 10,
         ),
@@ -196,14 +176,6 @@ Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
         const SizedBox(
           height: 10,
         ),
-        DropDown(
-          items: grouplist,
-          isExpanded: true,
-          initialValue: groupname ?? 'all cards',
-          onChanged: (value) {
-            group = value.toString();
-          },
-        ),
         const SizedBox(
           height: 10,
         ),
@@ -212,7 +184,7 @@ Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
       return !loader
           ? AlertDialog(
               contentPadding: EdgeInsets.all(10),
-              title: const Center(child: Text("Add Card")),
+              title: const Center(child: Text("Edit Card")),
               content: !loader
                   ? SingleChildScrollView(
                       child: Column(
@@ -246,10 +218,8 @@ Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
                           "lable": lable,
                           "description": description,
                           "imgurl": "NA",
-                          "uid": uid,
                           "timestamp": DateTime.now(),
                           "type": "1",
-                          "preference": "NA",
                         };
                         if (imgurl.length > 0) {
                           data["imgurl"] = imgurl;
@@ -257,16 +227,9 @@ Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
 
                         await FirebaseFirestore.instance
                             .collection("cards")
-                            .add(data)
+                            .doc(id)
+                            .update(data)
                             .then((value) async {
-                          if (group != 'all cards') {
-                            await FirebaseFirestore.instance
-                                .collection("users")
-                                .doc(uid)
-                                .update({
-                              "groups.$group": FieldValue.arrayUnion([value.id])
-                            });
-                          }
                           ToastSucessful();
                           Navigator.pop(context);
                         });
@@ -288,25 +251,18 @@ Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
   );
 }
 
-Widget AddCard2(BuildContext context, String uid, List<String> grouplist,
-    [String? groupname]) {
-  String lable = "";
-  String option1 = "NA";
-  String option2 = "NA";
-  String option3 = "NA";
-  String option4 = "NA";
-  bool correct1 = false;
-  bool correct2 = false;
-  bool correct3 = false;
-  bool correct4 = false;
-
-  File? image;
-  XFile? tempimg;
+Widget EditCard2(BuildContext context, String uid, Map data, String id) {
+  String lable = data["lable"];
+  String option1 = data["op1"];
+  String option2 = data["op2"];
+  String option3 = data["op3"];
+  String option4 = data["op4"];
+  bool correct1 = data["ans1"];
+  bool correct2 = data["ans2"];
+  bool correct3 = data["ans3"];
+  bool correct4 = data["ans4"];
 
   bool loader = false;
-
-  grouplist[0] != "all cards" ? grouplist.insert(0, 'all cards') : null;
-  String group = groupname ?? 'all cards';
 
   return StatefulBuilder(
     builder: (context, setState) {
@@ -440,17 +396,6 @@ Widget AddCard2(BuildContext context, String uid, List<String> grouplist,
         const SizedBox(
           height: 10,
         ),
-        DropDown(
-          items: grouplist,
-          isExpanded: true,
-          initialValue: groupname ?? 'all cards',
-          onChanged: (value) {
-            group = value.toString();
-          },
-        ),
-        const SizedBox(
-          height: 10,
-        ),
       ];
 
       return !loader
@@ -496,27 +441,16 @@ Widget AddCard2(BuildContext context, String uid, List<String> grouplist,
                           "ans2": correct2,
                           "ans3": correct3,
                           "ans4": correct4,
-                          "attempts": 0,
-                          "correct": 0,
                           "imgurl": "NA",
-                          "uid": uid,
                           "timestamp": DateTime.now(),
                           "type": "2",
-                          "preference": "NA",
                         };
 
                         await FirebaseFirestore.instance
                             .collection("cards")
-                            .add(data)
+                            .doc(id)
+                            .update(data)
                             .then((value) async {
-                          if (group != 'all cards') {
-                            await FirebaseFirestore.instance
-                                .collection("users")
-                                .doc(uid)
-                                .update({
-                              "groups.$group": FieldValue.arrayUnion([value.id])
-                            });
-                          }
                           ToastSucessful();
                           Navigator.pop(context);
                         });

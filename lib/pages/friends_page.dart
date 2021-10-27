@@ -362,7 +362,9 @@ class _FriendsPageState extends State<FriendsPage> {
                           subtitle: Text(temp["username"]),
                           trailing: IconButton(
                             icon: Icon(Icons.delete),
-                            onPressed: () {},
+                            onPressed: () {
+                              // TODO: add delete data
+                            },
                           ),
                         ),
                       );
