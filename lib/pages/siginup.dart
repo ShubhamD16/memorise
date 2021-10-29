@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 Future<UserCredential> signInWithGoogle() async {
@@ -28,19 +29,38 @@ class Signup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
+      body: Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/night_background.jpg"),
+                fit: BoxFit.cover)),
         height: MediaQuery.of(context).size.height,
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 30,
-            ),
             Center(
               child: Image.asset(
-                "assets/game.png",
+                "assets/icon/Memorize_Icon.jpeg",
                 fit: BoxFit.contain,
                 height: 300,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              child: Text(
+                "Flash Memorize",
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.architectsDaughter(
+                    fontSize: 50,
+                    color: Colors.white.withOpacity(0.8),
+                    shadows: [
+                      Shadow(color: Colors.black87, offset: Offset(5, 5))
+                    ],
+                    height: 0.8),
               ),
             ),
             const SizedBox(

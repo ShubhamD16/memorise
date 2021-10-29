@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:memorise/components/admob_helper.dart';
 import 'package:memorise/components/toast_comp.dart';
 import 'package:memorise/providers/userdata_provider.dart';
 import 'package:provider/provider.dart';
@@ -61,7 +62,10 @@ class _FriendsPageState extends State<FriendsPage> {
                                   content: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(temp.get("toname")),
+                                      Text(
+                                        temp.get("toname"),
+                                        style: TextStyle(fontSize: 30),
+                                      ),
                                       Text(temp.get("tousername"))
                                     ],
                                   ),
@@ -96,100 +100,109 @@ class _FriendsPageState extends State<FriendsPage> {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(temp.get("toname")),
-                            Text(temp.get("tousername"))
+                            Text(
+                              temp.get("fromname"),
+                              style: const TextStyle(
+                                fontSize: 30,
+                              ),
+                            ),
+                            Text(temp.get("fromusername"))
                           ],
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 50,
                           width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                child: const Text("Accept"),
-                                onPressed: () async {
-                                  await FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(userdata["uid"])
-                                      .update(
-                                    {
-                                      "friends": FieldValue.arrayUnion(
-                                        [
-                                          {
-                                            "uid": temp.get("fromuid"),
-                                            "username":
-                                                temp.get("fromusername"),
-                                            "name": temp.get("fromname")
-                                          },
-                                        ],
-                                      ),
-                                    },
-                                  );
-                                  await FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(temp.get("fromuid"))
-                                      .update(
-                                    {
-                                      "friends": FieldValue.arrayUnion(
-                                        [
-                                          {
-                                            "uid": temp.get("touid"),
-                                            "username": temp.get("tousername"),
-                                            "name": temp.get("toname")
-                                          },
-                                        ],
-                                      ),
-                                    },
-                                  ).whenComplete(() async {
-                                    await temp.reference.delete();
-                                    ToastSucessful("Request accepted");
-                                    setState(() {
-                                      requests.remove(temp);
-                                    });
-                                  });
-                                },
-                              ),
-                              ElevatedButton(
-                                child: const Text("Delete"),
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: const Center(
-                                            child: Text("Delete"),
-                                          ),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(temp.get("toname")),
-                                              Text(temp.get("tousername"))
-                                            ],
-                                          ),
-                                          actions: [
-                                            Center(
-                                              child: ElevatedButton(
-                                                child: const Text("Delete"),
-                                                onPressed: () async {
-                                                  await temp.reference
-                                                      .delete()
-                                                      .whenComplete(() =>
-                                                          ToastSucessful(
-                                                              "Request deleted"));
-                                                  Navigator.pop(context);
-                                                  if (requests.length == 1) {
-                                                    Navigator.pop(context);
-                                                  }
-                                                },
-                                              ),
-                                            )
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  child: const Text("Accept"),
+                                  onPressed: () async {
+                                    await FirebaseFirestore.instance
+                                        .collection("users")
+                                        .doc(userdata["uid"])
+                                        .update(
+                                      {
+                                        "friends": FieldValue.arrayUnion(
+                                          [
+                                            {
+                                              "uid": temp.get("fromuid"),
+                                              "username":
+                                                  temp.get("fromusername"),
+                                              "name": temp.get("fromname")
+                                            },
                                           ],
-                                        );
+                                        ),
+                                      },
+                                    );
+                                    await FirebaseFirestore.instance
+                                        .collection("users")
+                                        .doc(temp.get("fromuid"))
+                                        .update(
+                                      {
+                                        "friends": FieldValue.arrayUnion(
+                                          [
+                                            {
+                                              "uid": temp.get("touid"),
+                                              "username":
+                                                  temp.get("tousername"),
+                                              "name": temp.get("toname")
+                                            },
+                                          ],
+                                        ),
+                                      },
+                                    ).whenComplete(() async {
+                                      await temp.reference.delete();
+                                      ToastSucessful("Request accepted");
+                                      setState(() {
+                                        requests.remove(temp);
                                       });
-                                },
-                              )
-                            ],
+                                    });
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: const Text("Delete"),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Center(
+                                              child: Text("Delete"),
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(temp.get("toname")),
+                                                Text(temp.get("tousername"))
+                                              ],
+                                            ),
+                                            actions: [
+                                              Center(
+                                                child: ElevatedButton(
+                                                  child: const Text("Delete"),
+                                                  onPressed: () async {
+                                                    await temp.reference
+                                                        .delete()
+                                                        .whenComplete(() =>
+                                                            ToastSucessful(
+                                                                "Request deleted"));
+                                                    Navigator.pop(context);
+                                                    if (requests.length == 1) {
+                                                      Navigator.pop(context);
+                                                    }
+                                                  },
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        });
+                                  },
+                                )
+                              ],
+                            ),
                           ),
                         )
                       ],
@@ -361,9 +374,64 @@ class _FriendsPageState extends State<FriendsPage> {
                           title: Text(temp["name"]),
                           subtitle: Text(temp["username"]),
                           trailing: IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {
-                              // TODO: add delete data
+                            icon: const Icon(Icons.delete),
+                            onPressed: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title:
+                                          const Text("Remove from friend list"),
+                                      actions: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("Cancle"),
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection("users")
+                                                      .doc(userdata["uid"])
+                                                      .update({
+                                                    "friends":
+                                                        FieldValue.arrayRemove(
+                                                            [temp])
+                                                  }).whenComplete(() async {
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection("users")
+                                                        .doc(temp["uid"])
+                                                        .update({
+                                                      "friends": FieldValue
+                                                          .arrayRemove([
+                                                        {
+                                                          "name":
+                                                              userdata["name"],
+                                                          "uid":
+                                                              userdata["uid"],
+                                                          "username": userdata[
+                                                              "username"],
+                                                        }
+                                                      ])
+                                                    }).whenComplete(() {
+                                                      Navigator.pop(context);
+                                                      ToastSucessful("Removed");
+                                                    });
+                                                  });
+                                                },
+                                                child: const Text("Remove"))
+                                          ],
+                                        )
+                                      ],
+                                    );
+                                  });
                             },
                           ),
                         ),
@@ -377,6 +445,7 @@ class _FriendsPageState extends State<FriendsPage> {
                   ),
                 ),
               ),
+              AdmobHelper.OtherpageAdWidget(),
             ],
           ),
         ),

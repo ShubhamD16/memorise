@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:634415078587:android:4a2e174b1e27f62a239d9e",
+        "mobilesdk_app_id": "1:634415078587:android:ec0c1f409437b547239d9e",
         "android_client_info": {
-          "package_name": "com.example.memorise"
+          "package_name": "com.majestic.flashmemorize"
         }
       },
       "oauth_client": [
         {
-          "client_id": "634415078587-8lt981ces84j2cua22re8mnm9dvjue6e.apps.googleusercontent.com",
+          "client_id": "634415078587-6t6dlgsactds0bs73k6l8gb3sst04rv5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.memorise",
+            "package_name": "com.majestic.flashmemorize",
             "certificate_hash": "a8d1a3fd5350102d2f5389e551d5aa1468fe0675"
           }
         },

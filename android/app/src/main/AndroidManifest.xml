@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.memorise">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
-        android:label="memorise"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Flash Memorize"
+        android:icon="@mipmap/ic_launcher"
+        android:largeHeap="true"
+        >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -26,10 +29,7 @@
                  Flutter's first frame. -->
 
            
-            <meta-data
-              android:name="io.flutter.embedding.android.SplashScreenDrawable"
-              android:resource="@drawable/launch_background"
-              />
+           
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -40,5 +40,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3351687918055266~2015007481"/>
     </application>
 </manifest>

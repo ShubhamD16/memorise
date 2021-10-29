@@ -46,13 +46,16 @@ class _CardListTileState extends State<CardListTile> {
             widget.data["imgurl"] != "NA"
                 ? SizedBox(
                     height: 200,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.data["imgurl"],
-                      placeholder: (context, s) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.data["imgurl"],
+                        placeholder: (context, s) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                     ),
                   )
                 : const SizedBox(),
@@ -256,7 +259,69 @@ class _CardListTileState extends State<CardListTile> {
         IconSlideAction(
           icon: Icons.delete_forever,
           color: Colors.red[600],
-          onTap: () {},
+          onTap: () async {
+            await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                      title: const Center(
+                        child: Text("Delete Card"),
+                      ),
+                      content: const Text(
+                          "Deleting card will remove card from all the groups"),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Cancle"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Map temp = userdata["groups"];
+                                print(widget.cardid);
+                                print(temp);
+                                if (grouplist.length > 0) {
+                                  for (var v in grouplist) {
+                                    temp[v].remove(widget.cardid);
+                                  }
+                                  print(temp);
+
+                                  FirebaseFirestore.instance
+                                      .collection("users")
+                                      .doc(userdata["uid"])
+                                      .update({"groups": temp}).whenComplete(
+                                          () async {
+                                    FirebaseFirestore.instance
+                                        .collection("cards")
+                                        .doc(widget.cardid)
+                                        .delete()
+                                        .whenComplete(() {
+                                      Navigator.pop(context);
+                                      ToastSucessful("Card deleted");
+                                    });
+                                  });
+                                } else {
+                                  FirebaseFirestore.instance
+                                      .collection("cards")
+                                      .doc(widget.cardid)
+                                      .delete()
+                                      .whenComplete(() {
+                                    Navigator.pop(context);
+                                    ToastSucessful("Card deleted");
+                                  });
+                                }
+                              },
+                              child: const Text("Delete"),
+                            ),
+                          ],
+                        )
+                      ]);
+                });
+          },
         ),
         IconSlideAction(
           icon: Icons.cancel,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:memorise/components/admob_helper.dart';
 import 'package:memorise/components/card_listtile.dart';
 import 'package:memorise/components/create_card.dart';
 import 'package:memorise/providers/casdsdata.dart';
@@ -92,7 +93,7 @@ class CardsListState extends State<CardsList> {
             ),
             Expanded(
               flex: 1,
-              child: ListView.builder(
+              child: ListView.separated(
                 itemCount: datalist.length,
                 itemBuilder: (BuildContext context, int index) {
                   return CardListTile(
@@ -101,8 +102,15 @@ class CardsListState extends State<CardsList> {
                     groupname: widget.groupname,
                   );
                 },
+                separatorBuilder: (BuildContext context, int index) {
+                  if ((index + 3) % 5 == 0) {
+                    return AdmobHelper.OtherpageAdWidgetInlist();
+                  }
+                  return SizedBox();
+                },
               ),
-            )
+            ),
+            AdmobHelper.OtherpageAdWidget(),
           ],
         ),
       ),

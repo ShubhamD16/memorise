@@ -250,6 +250,7 @@ Widget AddCard1(BuildContext context, String uid, List<String> grouplist,
                           "timestamp": DateTime.now(),
                           "type": "1",
                           "preference": "NA",
+                          "shared": [],
                         };
                         if (imgurl.length > 0) {
                           data["imgurl"] = imgurl;

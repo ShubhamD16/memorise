@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:memorise/components/share_card.dart';
 import 'package:memorise/components/toast_comp.dart';
 import 'package:memorise/providers/userdata_provider.dart';
 import 'package:provider/provider.dart';
@@ -48,13 +47,16 @@ class _SharedCardListTileState extends State<SharedCardListTile> {
             widget.data["imgurl"] != "NA"
                 ? SizedBox(
                     height: 200,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.data["imgurl"],
-                      placeholder: (context, s) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.data["imgurl"],
+                        placeholder: (context, s) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                     ),
                   )
                 : const SizedBox(),

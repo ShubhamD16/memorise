@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:memorise/components/fontsdata.dart';
 import 'package:memorise/pages/mainpage.dart';
 import 'package:memorise/pages/siginup.dart';
@@ -17,6 +18,7 @@ import 'package:provider/single_child_widget.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await MobileAds.instance.initialize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) => runApp(MyApp()));
 }
@@ -116,7 +118,7 @@ class MyApp extends StatelessWidget {
                   }
                 }
                 return MaterialApp(
-                  title: 'Flutter Demo',
+                  title: 'Flash Memorize',
                   theme: context.watch<Setting>().getTheme(context),
                   routes: {
                     "/": (context) => const Dashboard(),

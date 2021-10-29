@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:memorise/components/test_cards.dart';
+import 'package:memorise/components/toast_comp.dart';
 import 'package:memorise/providers/casdsdata.dart';
 import 'package:provider/provider.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
@@ -25,6 +26,8 @@ class _TestPageState extends State<TestPage> {
   String checkfor = 'all';
   final CarouselController _carouselController = CarouselController();
   List sortedidlist = [];
+  int current_index = 0;
+  bool pagepop = false;
 
   Widget startTest() {
     return AlertDialog(
@@ -224,6 +227,7 @@ class _TestPageState extends State<TestPage> {
     CountDownController _controller = CountDownController();
 
     sorttest();
+    random = false;
 
     return SafeArea(
       child: Scaffold(
@@ -252,42 +256,98 @@ class _TestPageState extends State<TestPage> {
                       SizedBox(
                         height: h / 12,
                         width: w,
-                        child: timer
-                            ? Center(
-                                child: CircularCountDownTimer(
-                                  duration: duration,
-                                  initialDuration: 0,
-                                  controller: _controller,
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  height:
-                                      MediaQuery.of(context).size.height / 2,
-                                  ringColor: Colors.grey,
-                                  ringGradient: null,
-                                  fillColor: Colors.lightBlue,
-                                  fillGradient: const RadialGradient(
-                                      colors: [Colors.blueGrey, Colors.blue]),
-                                  backgroundColor: Colors.blueGrey,
-                                  backgroundGradient: null,
-                                  strokeWidth: 10.0,
-                                  strokeCap: StrokeCap.round,
-                                  textStyle: const TextStyle(
-                                      fontSize: 30.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                  textFormat: CountdownTextFormat.S,
-                                  isReverse: true,
-                                  isReverseAnimation: false,
-                                  isTimerTextShown: true,
-                                  autoStart: true,
-                                  onStart: () {
-                                    print('Countdown Started');
-                                  },
-                                  onComplete: () {
-                                    print('Countdown Ended');
-                                  },
-                                ),
-                              )
-                            : const SizedBox(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            timer
+                                ? Center(
+                                    child: CircularCountDownTimer(
+                                      duration: duration,
+                                      initialDuration: 0,
+                                      controller: _controller,
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              2,
+                                      ringColor: Colors.grey,
+                                      ringGradient: null,
+                                      fillColor: Colors.lightBlue,
+                                      fillGradient: const RadialGradient(
+                                          colors: [
+                                            Colors.blueGrey,
+                                            Colors.blue
+                                          ]),
+                                      backgroundColor: Colors.blueGrey,
+                                      backgroundGradient: null,
+                                      strokeWidth: 10.0,
+                                      strokeCap: StrokeCap.round,
+                                      textStyle: const TextStyle(
+                                          fontSize: 30.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                      textFormat: CountdownTextFormat.S,
+                                      isReverse: true,
+                                      isReverseAnimation: false,
+                                      isTimerTextShown: true,
+                                      autoStart: true,
+                                      onStart: () {
+                                        print('Countdown Started');
+                                      },
+                                      onComplete: () async {
+                                        print('Countdown Ended');
+                                        await showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Center(
+                                                  child: Text(
+                                                      "${current_index + 1}/${sortedidlist.length} cards memorised"),
+                                                ),
+                                                actions: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                          pagepop = true;
+                                                        },
+                                                        child:
+                                                            const Text("Exit"),
+                                                      ),
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            "Continue"),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                        if (pagepop == true) {
+                                          print("pagepop");
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                          ],
+                        ),
                       ),
                       // Ford card corosule
                       ClipRRect(
@@ -302,6 +362,13 @@ class _TestPageState extends State<TestPage> {
                                     carouselController: _carouselController,
                                     itemCount: sortedidlist.length,
                                     itemBuilder: (context, index, index2) {
+                                      if (index > current_index) {
+                                        current_index = index;
+                                      }
+                                      if (index + 1 == sortedidlist.length) {
+                                        ToastSucessful("Last Card");
+                                      }
+
                                       var temp = context
                                           .watch<AllCardsData>()
                                           .getcardsnapshot(sortedidlist[index]);
@@ -310,7 +377,7 @@ class _TestPageState extends State<TestPage> {
                                           ? GetTestCard(
                                               data: temp.data(), id: temp.id)
                                           : const Center(
-                                              child: Text("Card Deleted"),
+                                              child: Text("No Data"),
                                             );
                                     },
                                     options: CarouselOptions(

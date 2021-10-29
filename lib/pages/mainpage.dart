@@ -5,10 +5,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:memorise/components/admob_helper.dart';
 import 'package:memorise/components/create_group.dart';
-import 'package:memorise/components/sharedcard_listtile.dart';
 import 'package:memorise/components/toast_comp.dart';
 import 'package:memorise/pages/add_user_data.dart';
 import 'package:memorise/pages/cards_colection.dart';
@@ -22,14 +22,20 @@ import 'package:memorise/providers/userdata_provider.dart';
 import 'package:memorise/providers/userstate_provider.dart';
 import 'package:provider/provider.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     Map? userdata = context.watch<UserData>().data;
     bool userdataloaded = false;
     List<String> groupkeys = [];
+
     if (userdata == null) {
       return const AddUserData();
     } else {
@@ -49,7 +55,10 @@ class Dashboard extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Memorise"),
+          title: const Text(
+            "Flash Memorize",
+            style: TextStyle(fontSize: 30),
+          ),
         ),
         drawer: Container(
           width: 2 * MediaQuery.of(context).size.width / 3,
@@ -91,6 +100,16 @@ class Dashboard extends StatelessWidget {
                           ),
                         )),
                     ListTile(
+                      title: const Text("Friend List"),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return FriendsPage();
+                        }));
+                      },
+                    ),
+                    ListTile(
                       title: const Text("Settings"),
                       onTap: () {
                         Navigator.pop(context);
@@ -106,25 +125,9 @@ class Dashboard extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: const Text("Test"),
+                      title: const Text("Privacy Policies"),
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return TestPage(
-                              idlist:
-                                  context.watch<AllCardsData>().getidlist());
-                        }));
-                      },
-                    ),
-                    ListTile(
-                      title: const Text("Friend List"),
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return FriendsPage();
-                        }));
                       },
                     ),
                     ListTile(
@@ -141,16 +144,20 @@ class Dashboard extends StatelessWidget {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () async {
-            await showDialog(
-                context: context,
-                builder: (context) {
-                  return addCard(context, uid, groupkeys);
-                });
-          },
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 50),
+          child: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return addCard(context, uid, groupkeys);
+                  });
+            },
+          ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -401,6 +408,9 @@ class Dashboard extends StatelessWidget {
                         );
                       },
                       separatorBuilder: (context, index) {
+                        if ((index + 3) % 5 == 0) {
+                          return AdmobHelper.MainpageAdWidgetInlist();
+                        }
                         return const SizedBox(
                           height: 10,
                         );
@@ -408,6 +418,7 @@ class Dashboard extends StatelessWidget {
                       itemCount: userdataloaded ? groupkeys.length + 1 : 1),
                 ),
               ),
+              AdmobHelper.MainpageAdWidget(),
             ],
           ),
         ),

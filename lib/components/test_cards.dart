@@ -33,8 +33,11 @@ class _GetTestCardState extends State<GetTestCard> {
                         height: 4 * MediaQuery.of(context).size.height / 12,
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: CachedNetworkImage(
-                            imageUrl: data["imgurl"],
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              imageUrl: data["imgurl"],
+                            ),
                           ),
                         ),
                       )
